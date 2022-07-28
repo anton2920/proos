@@ -1,0 +1,4 @@
+/**/*.o
+.idea
+bin/
+os.img
