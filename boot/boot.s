@@ -3,6 +3,11 @@
 .section .text
 .globl _start
 _start:
+	xorw %ax, %ax
+	movw %ax, %ds
+	movw %ax, %es
+	movw %ax, %ss
+
 	movw $0x9000, %sp
 	movw %sp, %bp
 
