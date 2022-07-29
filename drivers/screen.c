@@ -11,6 +11,8 @@
 #define SCREEN_REG_CTRL 0x3D4
 #define SCREEN_REG_DATA 0x3D5
 
+#define VGA_DEFAULT_STYLE VGA_TEXT_FG(VGA_LIGHT_GRAY)
+
 
 static int _k_screen_get_screen_offset(int row, int col)
 {
@@ -43,34 +45,34 @@ static void _k_screen_set_cursor(int offset)
 
 
 /* Advance the text cursor, scrolling the video buffer if necessary. */
-static int _k_screen_handle_scrolling(int cursor_offset)
+static int _k_screen_handle_scrolling(int current_offset)
 {
     int i;
 
-    if (cursor_offset < ((MAX_ROWS * MAX_COLS) << 2)) {
-        return cursor_offset;
+    if (current_offset < ((MAX_ROWS * MAX_COLS) << 2)) {
+        return current_offset;
     }
 
     /* Move rows to one position up. This should erase first row. */
     for (i = 1; i < MAX_ROWS; i++) {
-        memcpy((void *) (VGA_TEXT_BUFFER + _k_screen_get_screen_offset(0, i)),
-               (const void *) (VGA_TEXT_BUFFER + _k_screen_get_screen_offset(0, i - 1)),
+        memcpy((void *) (VGA_TEXT_BUFFER + _k_screen_get_screen_offset(i - 1, 0)),
+               (const void *) (VGA_TEXT_BUFFER + _k_screen_get_screen_offset(i, 0)),
                MAX_COLS * 2
         );
     }
 
-    char *last_line = (char *) (VGA_TEXT_BUFFER + _k_screen_get_screen_offset(0, MAX_ROWS - 1));
+    char *last_line = (char *) (VGA_TEXT_BUFFER + _k_screen_get_screen_offset(MAX_ROWS - 1, 0));
     for (i = 0; i < MAX_COLS * 2; i++) {
         last_line[i] = 0;
     }
 
-    cursor_offset -= 2 * MAX_COLS;
+    current_offset -= 2 * MAX_COLS;
 
-    return cursor_offset;
+    return current_offset;
 }
 
 
-static void _k_screen_printc(char ch, int row, int col, unsigned char style)
+static void _k_screen_printc_at(char ch, int row, int col, unsigned char style)
 {
     unsigned char *vga_text_buffer = (unsigned char *) VGA_TEXT_BUFFER;
     int offset;
@@ -107,7 +109,7 @@ static void _k_screen_prints_at(const char *str, int row, int col, unsigned char
     }
 
     while (*str) {
-        _k_screen_printc(*str, -1, -1, style);
+        _k_screen_printc_at(*str, -1, -1, style);
         ++str;
     }
 }
@@ -121,7 +123,19 @@ void k_screen_prints_ex(const char *str, unsigned char style)
 
 void k_screen_prints(const char *str)
 {
-    k_screen_prints_ex(str, VGA_LIGHT_GRAY);
+    k_screen_prints_ex(str, VGA_DEFAULT_STYLE);
+}
+
+
+void k_screen_printc_ex(char ch, unsigned char style)
+{
+    _k_screen_printc_at(ch, -1, -1, style);
+}
+
+
+void k_screen_printc(char ch)
+{
+    k_screen_printc_ex(ch, VGA_DEFAULT_STYLE);
 }
 
 
@@ -131,7 +145,7 @@ void k_screen_clear(void)
 
     for (row = 0; row < MAX_ROWS; row++) {
         for (col = 0; col < MAX_COLS; col++) {
-            _k_screen_printc(' ', row, col, VGA_WHITE);
+            _k_screen_printc_at(' ', row, col, VGA_DEFAULT_STYLE);
         }
     }
 
