@@ -51,7 +51,7 @@ bootdrv:
 
 # .section .rodata
 booting_str:
-	.asciz "Booting...\r\n"
+	.asciz "Booting... "
 
 drive_error_str:
 	.asciz "Drive read failed: "
