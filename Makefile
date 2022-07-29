@@ -25,8 +25,9 @@ all: os.img
 
 # Build targets
 os.img: $(BINDIR)/boot.bin $(BINDIR)/kernel.bin
-	cat $^ > $@
-	truncate -s 1M $@
+	dd if=/dev/zero of=$@ bs=1024 count=1440
+	dd if=$(BINDIR)/boot.bin of=$@ bs=512 seek=0 conv=notrunc
+	dd if=$(BINDIR)/kernel.bin of=$@ bs=512 seek=1 conv=notrunc
 
 # Bootloader
 $(OBJDIR)/%.o: $(BOOTDIR)/%.s $(ASM_SRCS)
@@ -59,18 +60,32 @@ run: os.img
 	vncviewer localhost:5900
 	killall qemu-kvm || exit 0
 
+PHONY += burn
+burn: os.img
+	sudo dd if=$< of=/dev/sde status=progress
+
+burncheck: burn
+	sudo dd if=/dev/sde of=os.img.chk status=progress
+	diff os.img os.img.chk
+	rm -f os.img.chk
+
+PHONY += dump
 dump: os.img
 	hexdump $<
 
+PHONY += dumpboot
 dumpboot: $(BINDIR)/boot.bin
 	hexdump $<
 
+PHONY += objdumpboot
 objdumpboot: $(BINDIR)/boot.bin
 	objdump -b binary --adjust-vma=0x7c00 -D -m i386 $<
 
+PHONY += dumpkern
 dumpkern: $(BINDIR)/kernel.bin
 	hexdump $<
 
+PHONY += objdumpkern
 objdumpkern: $(BINDIR)/kernel.bin
 	objdump -b binary --adjust-vma=0x1000 -D -m i386 $<
 
