@@ -1,9 +1,11 @@
+VERSION = $(shell echo "`git describe --tags --abbrev=0`.`git rev-list --count HEAD`")
+
 # Linker
 LDFLAGS = -melf_i386 --oformat=binary
 
 # C compiler
 CC = gcc
-CFLAGS = -Wall -Wextra -O2 -ffreestanding -m32
+CFLAGS = -Wall -Wextra -O2 -ffreestanding -m32 -DVERSION='"$(VERSION)"'
 
 # Directories
 BINDIR = ./bin
@@ -12,8 +14,9 @@ OBJDIR = ./obj
 BOOTDIR = ./boot
 KERNDIR = ./kernel
 DRIVDIR = ./drivers
+TESTDIR = ./test
 
-SUBDIRS = $(BOOTDIR) $(KERNDIR) $(DRIVDIR)
+SUBDIRS = $(BOOTDIR) $(KERNDIR) $(DRIVDIR) $(TESTDIR)
 
 # Files
 C_HDRS   = $(wildcard *.h $(foreach fd, $(SUBDIRS), $(fd)/*.h))
