@@ -1,7 +1,7 @@
 #include "../kernel/low_level.h"
 #include "../kernel/stdlib.h"
 
-#include "../kernel/stdlib.h"
+#include "screen.h"
 
 
 #define VGA_TEXT_BUFFER 0xB8000
@@ -10,11 +10,6 @@
 
 #define SCREEN_REG_CTRL 0x3D4
 #define SCREEN_REG_DATA 0x3D5
-
-
-enum vga_colors {
-    VGA_WHITE_ON_BLACK = 0xF
-};
 
 
 static int _k_screen_get_screen_offset(int row, int col)
@@ -75,14 +70,10 @@ static int _k_screen_handle_scrolling(int cursor_offset)
 }
 
 
-static void _k_screen_printc(char ch, int row, int col, char style)
+static void _k_screen_printc(char ch, int row, int col, unsigned char style)
 {
     unsigned char *vga_text_buffer = (unsigned char *) VGA_TEXT_BUFFER;
     int offset;
-
-    if (style < 0) {
-        style = VGA_WHITE_ON_BLACK;
-    }
 
     if ((row >= 0) && (col >= 0)) {
         offset = _k_screen_get_screen_offset(row, col);
@@ -109,22 +100,28 @@ static void _k_screen_printc(char ch, int row, int col, char style)
 }
 
 
-static void _k_screen_prints_at(const char *str, int row, int col)
+static void _k_screen_prints_at(const char *str, int row, int col, unsigned char style)
 {
     if ((row >= 0) && (col >= 0)) {
         _k_screen_set_cursor(_k_screen_get_screen_offset(row, col));
     }
 
     while (*str) {
-        _k_screen_printc(*str, -1, -1, VGA_WHITE_ON_BLACK);
+        _k_screen_printc(*str, -1, -1, style);
         ++str;
     }
 }
 
 
+void k_screen_prints_ex(const char *str, unsigned char style)
+{
+    _k_screen_prints_at(str, -1, -1, style);
+}
+
+
 void k_screen_prints(const char *str)
 {
-    _k_screen_prints_at(str, -1, -1);
+    k_screen_prints_ex(str, VGA_LIGHT_GRAY);
 }
 
 
@@ -134,7 +131,7 @@ void k_screen_clear(void)
 
     for (row = 0; row < MAX_ROWS; row++) {
         for (col = 0; col < MAX_COLS; col++) {
-            _k_screen_printc(' ', row, col, VGA_WHITE_ON_BLACK);
+            _k_screen_printc(' ', row, col, VGA_WHITE);
         }
     }
 
