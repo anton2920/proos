@@ -31,6 +31,11 @@ ifdef TEST
 SUBDIRS += $(TESTDIR)
 endif
 
+# TEST
+ifdef TEST
+SUBDIRS += $(TESTDIR)
+endif
+
 # Files
 C_HDRS   = $(wildcard *.h $(foreach fd, $(SUBDIRS), $(fd)/*.h))
 C_SRCS   = $(wildcard *.c $(foreach fd, $(SUBDIRS), $(fd)/*.c))
