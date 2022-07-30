@@ -49,7 +49,7 @@ static int _k_screen_handle_scrolling(int current_offset)
 {
     int i;
 
-    if (current_offset < ((MAX_ROWS * MAX_COLS) << 2)) {
+    if (current_offset < ((MAX_ROWS * MAX_COLS) << 1)) {
         return current_offset;
     }
 
