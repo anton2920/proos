@@ -1,7 +1,7 @@
 #include "../drivers/screen.h"
 
 
-static void kernel_intro(void)
+static void k_intro(void)
 {
     /* Finishing "Booting... " message */
     k_screen_prints("done.\r\n");
@@ -10,7 +10,7 @@ static void kernel_intro(void)
 }
 
 
-void kernel_main(void)
+void k_main(void)
 {
-    kernel_intro();
+    k_intro();
 }
