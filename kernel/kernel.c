@@ -10,7 +10,14 @@ static void k_intro(void)
 }
 
 
+void thl_main();
+
+
 void k_main(void)
 {
     k_intro();
+
+    /* Fibonacci numbers */
+    k_screen_prints("\nThis program prints all 8-bit fibonacci numbers: \r\n");
+    thl_main();
 }
