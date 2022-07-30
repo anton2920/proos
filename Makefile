@@ -1,5 +1,8 @@
 VERSION = $(shell echo "`git describe --tags --abbrev=0`.`git rev-list --count HEAD`")
 
+# Assembler
+ASMFLAGS = --32
+
 # Linker
 LDFLAGS = -melf_i386 --oformat=binary
 
@@ -16,13 +19,13 @@ KERNDIR = ./kernel
 DRIVDIR = ./drivers
 TESTDIR = ./test
 
-SUBDIRS = $(BOOTDIR) $(KERNDIR) $(DRIVDIR) $(TESTDIR)
+SUBDIRS = $(BOOTDIR) $(KERNDIR) $(DRIVDIR)
 
 # Files
 C_HDRS   = $(wildcard *.h $(foreach fd, $(SUBDIRS), $(fd)/*.h))
 C_SRCS   = $(wildcard *.c $(foreach fd, $(SUBDIRS), $(fd)/*.c))
 ASM_SRCS = $(wildcard $(BOOTDIR)/*.s)
-OBJS = $(addprefix $(OBJDIR)/, $(C_SRCS:.c=.o))
+OBJS     = $(addprefix $(OBJDIR)/, $(C_SRCS:.c=.o))
 
 all: os.img
 
@@ -35,7 +38,7 @@ os.img: $(BINDIR)/boot.bin $(BINDIR)/kernel.bin
 # Bootloader
 $(OBJDIR)/%.o: $(BOOTDIR)/%.s $(ASM_SRCS)
 	mkdir -p $(@D)
-	as --32 -I$(BOOTDIR) $< -o $@
+	as $(ASMFLAGS) -I$(BOOTDIR) $< -o $@
 
 $(BINDIR)/%.bin: $(OBJDIR)/%.o
 	mkdir -p $(@D)
@@ -52,7 +55,7 @@ $(OBJDIR)/%.o: %.c $(C_HDRS)
 
 $(OBJDIR)/%.o: $(KERNDIR)/%.s
 	mkdir -p $(@D)
-	as --32 $< -o $@
+	as $(ASMFLAGS) $< -o $@
 
 # Phony targets
 PHONY += run
