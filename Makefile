@@ -3,6 +3,10 @@ VERSION = $(shell echo "`git describe --tags --abbrev=0`.`git rev-list --count H
 # Assembler
 ASMFLAGS = --32
 
+ifdef TEST
+ASMFLAGS += --defsym TEST=1
+endif
+
 # Linker
 LDFLAGS = -melf_i386 --oformat=binary
 
@@ -20,6 +24,11 @@ DRIVDIR = ./drivers
 TESTDIR = ./test
 
 SUBDIRS = $(BOOTDIR) $(KERNDIR) $(DRIVDIR)
+
+# TEST
+ifdef TEST
+SUBDIRS += $(TESTDIR)
+endif
 
 # Files
 C_HDRS   = $(wildcard *.h $(foreach fd, $(SUBDIRS), $(fd)/*.h))
