@@ -16,15 +16,30 @@ _start:
 	leaw booting_str, %di
 	callw prints
 
-	# Loading kernel
-	.equ nsectors_read, 16
+	# Loading kernel pt. #1 (sectors 2 - 18 (1 is loaded by BIOS already))
 	movb $0x2, %ah # Command: read sectors into memory
-	xorw %dx, %dx # Head number = 0
+	movb $0x0, %dh # Head number = 0
 	movb bootdrv, %dl
-	xorw %cx, %cx # Cylinder/Track number = 0
+	movb $0x0, %ch # Cylinder/Track number = 0
 	movb $0x2, %cl # Sector number = 2
-	movb $nsectors_read, %al
+	movb $0x11, %al
 	movw $kernel_offset, %bx # Buffer address = ES:$kernel_offset
+	int $0x13
+
+	jc _start_drive_error
+
+	# Loading kernel pt. #2 (sectors 19 - 37)
+	movb $0x0, %ah
+	shlw $0x9, %ax
+	addw $kernel_offset, %ax
+	movw %ax, %bx # Buffer address = ES:$kernel_offset
+
+	movb $0x2, %ah # Command: read sectors into memory
+	movb $0x1, %dh # Head number = 1
+	movb bootdrv, %dl
+	movb $0x0, %ch # Cylinder/Track number = 0
+	movb $0x1, %cl # Sector number = 1
+	movb $0x12, %al
 	int $0x13
 
 	jc _start_drive_error
