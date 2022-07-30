@@ -12,4 +12,6 @@ void k_test_vga_text_palette(void)
             k_screen_prints_ex(TEST_CHARACTERS " ", VGA_TEXT_BG(bg) | VGA_TEXT_FG(fg));
         }
     }
+    k_screen_printc('\r');
+    k_screen_printc('\n');
 }
