@@ -10,7 +10,7 @@ unsigned char inb(unsigned short port)
 
 void outb(unsigned short port, unsigned char data)
 {
-    __asm__ volatile ("out %%al , %%dx "
+    __asm__ volatile ("out %%al, %%dx"
         :
         : "a" (data), "d" (port));
 }
