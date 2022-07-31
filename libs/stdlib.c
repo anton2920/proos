@@ -1,4 +1,13 @@
+#include "../drivers/screen.h"
+
 #include "stdlib.h"
+
+
+_Noreturn void abort(void)
+{
+    k_screen_prints("Aborted\r\n");
+    while (1);
+}
 
 
 void *memcpy(void *dest, const void *src, unsigned long n)
