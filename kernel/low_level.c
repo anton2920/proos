@@ -1,7 +1,7 @@
 unsigned char inb(unsigned short port)
 {
     unsigned char result;
-    __asm__ ("in %%dx, %%al"
+    __asm__ volatile ("in %%dx, %%al"
         : "=a" (result)
         : "d" (port));
     return result;
@@ -10,7 +10,7 @@ unsigned char inb(unsigned short port)
 
 void outb(unsigned short port, unsigned char data)
 {
-    __asm__ ("out %%al , %%dx "
+    __asm__ volatile ("out %%al , %%dx "
         :
         : "a" (data), "d" (port));
 }
@@ -19,7 +19,7 @@ void outb(unsigned short port, unsigned char data)
 unsigned short inw(unsigned short port)
 {
     unsigned short result;
-    __asm__ ("inw %%dx, %%ax"
+    __asm__ volatile ("inw %%dx, %%ax"
         : "=a" (result)
         : "d" (port));
     return result;
@@ -28,7 +28,7 @@ unsigned short inw(unsigned short port)
 
 void outw(unsigned short port, unsigned short data)
 {
-    __asm__ ("outw %%ax, %%dx"
+    __asm__ volatile ("outw %%ax, %%dx"
         :
         : "a" (data), "d" (port));
 }
