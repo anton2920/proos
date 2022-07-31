@@ -1,16 +1,17 @@
 #include "stdlib.h"
 
 
-/* TODO: redefine with intrinsics */
-void *memcpy(void *_dest, const void *_src, unsigned long size)
+void *memcpy(void *dest, const void *src, unsigned long n)
 {
-    const char *src = _src;
-    char *dest = _dest;
-    void *ret = _dest;
+    void *ret = dest;
 
-    while (size--) {
-        *dest++ = *src++;
-    }
+    __asm__ volatile ("cld\n\t"
+                      "rep movsl"
+        : "=D"(dest), "=S"(src)
+        : "0"(dest), "1"(src), "c"(n >> 2));
+    __asm__ volatile ("rep movsb"
+        :
+        : "D"(dest), "S"(src), "c"(n & 3));
 
     return ret;
 }
