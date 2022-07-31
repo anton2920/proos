@@ -20,10 +20,11 @@ OBJDIR = ./obj
 
 BOOTDIR = ./boot
 KERNDIR = ./kernel
+LIBSDIR = ./libs
 DRIVDIR = ./drivers
 TESTDIR = ./test
 
-SUBDIRS = $(BOOTDIR) $(KERNDIR) $(DRIVDIR)
+SUBDIRS = $(BOOTDIR) $(KERNDIR) $(DRIVDIR) $(LIBSDIR)
 
 # TEST
 ifdef TEST

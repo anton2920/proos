@@ -1,5 +1,5 @@
 #include "../kernel/portio.h"
-#include "../kernel/stdlib.h"
+#include "../libs/stdlib.h"
 
 #include "screen.h"
 
