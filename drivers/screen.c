@@ -1,6 +1,7 @@
 #include "../libs/stdio.h"
 #include "../libs/stdlib.h"
 
+#include "pcspk.h"
 #include "screen.h"
 
 
@@ -84,6 +85,9 @@ static void _k_screen_printc_at(char ch, int row, int col, unsigned char style)
     }
 
     switch (ch) {
+        case '\a':
+            k_pcspk_beep();
+            break;
         case '\n':
             offset += 2 * MAX_COLS;
             break;
