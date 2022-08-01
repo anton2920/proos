@@ -71,7 +71,7 @@ $(OBJDIR)/%.o: $(KERNDIR)/%.s
 PHONY += run
 run: os.img
 	killall qemu-kvm || exit 0
-	/usr/libexec/qemu-kvm -drive if=floppy,file=$< &
+	/usr/libexec/qemu-kvm -boot order=a -drive if=floppy,file=$< &
 	sleep 0.1
 	vncviewer localhost:5900
 	killall qemu-kvm || exit 0
