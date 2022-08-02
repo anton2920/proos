@@ -49,7 +49,7 @@ static void _k_gdt_init_entry(int num, unsigned long base, unsigned long limit, 
  * to tell the processor where the new GDT is and update the
  * new segment registers
  */
-void k_gdt_install(void)
+void k_gdt_init(void)
 {
     /* Set up the GDT pointer and limit */
     gdt_descriptor.limit = (sizeof(struct k_gdt_entry) * 3) - 1;

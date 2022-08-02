@@ -14,6 +14,7 @@ struct k_idt_descriptor {
     unsigned int base;
 } __attribute__((packed));
 
+
 /* Declare an IDT of 256 entries.
  * If any undefined IDT entry is hit, it normally
  * will cause an "Unhandled Interrupt" exception. Any descriptor
@@ -27,7 +28,7 @@ struct k_idt_descriptor idt_descriptor;
 extern void _k_idt_load(void);
 
 
-static void k_idt_init_entry(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags)
+void k_idt_init_entry(unsigned char num, unsigned long base, unsigned short sel, unsigned char flags)
 {
     struct k_idt_entry *entry;
 
@@ -46,7 +47,7 @@ static void k_idt_init_entry(unsigned char num, unsigned long base, unsigned sho
 }
 
 
-void k_idt_install(void)
+void k_idt_init(void)
 {
     /* Sets the special IDT pointer up, just like in 'gdt.c' */
     idt_descriptor.limit = (sizeof(struct k_idt_entry) * 256) - 1;

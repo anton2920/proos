@@ -13,10 +13,15 @@ static void k_intro(void)
 }
 
 
+void k_init(void)
+{
+    k_gdt_init();
+    k_idt_init();
+}
+
+
 void k_main(void)
 {
-    k_gdt_install();
-    k_idt_install();
-
+    k_init();
     k_intro();
 }
