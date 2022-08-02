@@ -1,3 +1,4 @@
+#include "../drivers/keyboard.h"
 #include "../drivers/pit.h"
 #include "../drivers/screen.h"
 
@@ -23,6 +24,7 @@ void k_init(void)
     k_isr_exceptions_init();
     k_irq_init();
     k_pit_timer_init();
+    k_keyboard_init();
 
     __asm__ volatile ("sti");
 }
