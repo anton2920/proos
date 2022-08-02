@@ -1,5 +1,6 @@
 #include "../libs/stdio.h"
 
+#include "pit.h"
 #include "pcspk.h"
 
 
@@ -34,13 +35,8 @@ static void k_pcspk_off()
 /* Make a beep */
 void k_pcspk_beep(void)
 {
-    int i, j;
-
+    k_pit_timer_phase(19); /* Init 19 Hz timer for 'k_pit_timer_wait()' */
     k_pcskp_play(1000);
-    for (i = 0; i < 0xFFFF; ++i) {
-        for (j = 0; j < 0x2FF; ++j) {
-            __asm__ volatile ("nop");
-        }
-    }
+    k_pit_timer_wait(1);
     k_pcspk_off();
 }
