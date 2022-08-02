@@ -10,6 +10,17 @@ _Noreturn void abort(void)
 }
 
 
+void *memset(void *dest, int c, unsigned long n)
+{
+    __asm__ volatile ("cld\n\t"
+                      "rep stosb"
+        :
+        : "D"(dest), "a"(c), "c"(n));
+
+    return dest;
+}
+
+
 void *memcpy(void *dest, const void *src, unsigned long n)
 {
     void *ret = dest;
