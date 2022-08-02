@@ -1,6 +1,7 @@
 #ifndef STDLIB_H
 #define STDLIB_H
 
+extern void halt(void);
 void abort(void);
 
 void *memset(void *dest, int c, unsigned long n);

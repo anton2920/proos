@@ -3,10 +3,10 @@
 #include "stdlib.h"
 
 
-_Noreturn void abort(void)
+void abort(void)
 {
     k_screen_prints("Aborted\r\n");
-    while (1);
+    halt();
 }
 
 

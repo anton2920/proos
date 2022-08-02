@@ -8,6 +8,13 @@ _start:
 .else
 	calll k_test
 .endif
-_end:
+	calll halt
+
+
+.globl halt
+.type halt, @function
+halt:
+	cli
+halt_loop:
 	hlt
-	jmp _end
+	jmp halt_loop
