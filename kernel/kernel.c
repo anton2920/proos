@@ -1,3 +1,4 @@
+#include "../drivers/pit.h"
 #include "../drivers/screen.h"
 
 #include "gdt.h"
@@ -21,6 +22,7 @@ void k_init(void)
     k_idt_init();
     k_isr_exceptions_init();
     k_irq_init();
+    k_pit_timer_init();
 
     __asm__ volatile ("sti");
 }
