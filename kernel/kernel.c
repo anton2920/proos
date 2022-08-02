@@ -3,6 +3,7 @@
 #include "gdt.h"
 #include "idt.h"
 #include "isr.h"
+#include "irq.h"
 
 
 static void k_intro(void)
@@ -19,6 +20,9 @@ void k_init(void)
     k_gdt_init();
     k_idt_init();
     k_isr_exceptions_init();
+    k_irq_init();
+
+    __asm__ volatile ("sti");
 }
 
 
