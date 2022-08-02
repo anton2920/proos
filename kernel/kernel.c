@@ -34,4 +34,10 @@ void k_main(void)
 {
     k_init();
     k_intro();
+
+    /* Keyboard input loop */
+    while (1) {
+        __asm__ volatile ("sti\n\t"
+                          "hlt");
+    }
 }
