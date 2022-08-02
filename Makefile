@@ -1,4 +1,4 @@
-VERSION = $(shell echo "`git describe --tags --abbrev=0`.`git rev-list --count HEAD`")
+VERSION = $(shell echo "`git describe --tags`")
 
 # Assembler
 ASMFLAGS = --32
