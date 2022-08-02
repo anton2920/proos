@@ -32,11 +32,14 @@ SUBDIRS += $(TESTDIR)
 endif
 
 # Files
-C_HDRS   = $(wildcard *.h $(foreach fd, $(SUBDIRS), $(fd)/*.h))
-C_SRCS   = $(wildcard *.c $(foreach fd, $(SUBDIRS), $(fd)/*.c))
-ASM_SRCS = $(wildcard $(BOOTDIR)/*.s)
-OBJS     = $(addprefix $(OBJDIR)/, $(C_SRCS:.c=.o))
+C_HDRS    =  $(wildcard *.h $(foreach fd, $(SUBDIRS), $(fd)/*.h))
+C_SRCS    =  $(wildcard *.c $(foreach fd, $(SUBDIRS), $(fd)/*.c))
+ASM_SRCS  =  $(wildcard $(KERNDIR)/*.s)
+BOOT_SRCS =  $(wildcard $(BOOTDIR)/*.s)
+OBJS      =  $(addprefix $(OBJDIR)/, $(ASM_SRCS:.s=.o))
+OBJS      += $(addprefix $(OBJDIR)/, $(C_SRCS:.c=.o))
 
+PHONY += all
 all: os.img
 
 # Build targets
@@ -46,7 +49,7 @@ os.img: $(BINDIR)/boot.bin $(BINDIR)/kernel.bin
 	dd if=$(BINDIR)/kernel.bin of=$@ bs=512 seek=1 conv=notrunc
 
 # Bootloader
-$(OBJDIR)/%.o: $(BOOTDIR)/%.s $(ASM_SRCS)
+$(OBJDIR)/%.o: $(BOOTDIR)/%.s $(BOOT_SRCS)
 	mkdir -p $(@D)
 	as $(ASMFLAGS) -I$(BOOTDIR) $< -o $@
 
@@ -55,7 +58,7 @@ $(BINDIR)/%.bin: $(OBJDIR)/%.o
 	ld $(LDFLAGS) -Ttext 0x7c00 -o $@ $<
 
 # Kernel
-$(BINDIR)/kernel.bin: $(OBJDIR)/kernel_entry.o $(OBJS)
+$(BINDIR)/kernel.bin: $(OBJDIR)/$(KERNDIR)/kernel_entry.o $(OBJS)
 	mkdir -p $(@D)
 	ld $(LDFLAGS) -Ttext 0x1000 -o $@ $^
 
@@ -63,7 +66,7 @@ $(OBJDIR)/%.o: %.c $(C_HDRS)
 	mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJDIR)/%.o: $(KERNDIR)/%.s
+$(OBJDIR)/%.o: %.s
 	mkdir -p $(@D)
 	as $(ASMFLAGS) $< -o $@
 
