@@ -2,6 +2,7 @@
 
 #include "gdt.h"
 #include "idt.h"
+#include "isr.h"
 
 
 static void k_intro(void)
@@ -17,6 +18,7 @@ void k_init(void)
 {
     k_gdt_init();
     k_idt_init();
+    k_isr_exceptions_init();
 }
 
 
