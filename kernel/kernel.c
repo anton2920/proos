@@ -1,6 +1,7 @@
 #include "../drivers/screen.h"
 
 #include "gdt.h"
+#include "idt.h"
 
 
 static void k_intro(void)
@@ -15,6 +16,7 @@ static void k_intro(void)
 void k_main(void)
 {
     k_gdt_install();
+    k_idt_install();
 
     k_intro();
 }
