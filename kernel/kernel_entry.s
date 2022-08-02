@@ -30,3 +30,10 @@ _k_gdt_flush:
 
 _k_gdt_flush_flush:
 	retl
+
+
+.globl _k_idt_load
+.type _k_idt_load, @function
+_k_idt_load:
+	lidt idt_descriptor
+	retl
