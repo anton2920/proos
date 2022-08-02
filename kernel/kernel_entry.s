@@ -8,4 +8,6 @@ _start:
 .else
 	calll k_test
 .endif
-	jmp .
+_end:
+	hlt
+	jmp _end
