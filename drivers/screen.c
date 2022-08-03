@@ -5,7 +5,7 @@
 #include "screen.h"
 
 
-#define VGA_TEXT_BUFFER 0xB8000
+#define VGA_TEXT_BUFFER (void *) 0xB8000
 #define MAX_COLS 80
 #define MAX_ROWS 25
 
@@ -147,7 +147,7 @@ void k_screen_printc(char ch)
 }
 
 
-void k_screen_clear(void)
+static void _k_screen_erase(void)
 {
     int row, col;
 
@@ -156,6 +156,30 @@ void k_screen_clear(void)
             _k_screen_printc_at(' ', row, col, VGA_DEFAULT_STYLE);
         }
     }
+}
 
+
+void k_screen_clear(void)
+{
+    _k_screen_erase();
     _k_screen_set_cursor(_k_screen_get_screen_offset(0, 0));
+}
+
+
+/* TODO: move this logic somewhere else? */
+void k_screen_handle_ctrl_l(unsigned long line_length)
+{
+    int offset;
+    offset = _k_screen_get_cursor();
+
+    if ((offset / (2 * MAX_COLS)))
+    {
+        unsigned long total_length = (line_length << 1) + (13 << 1);
+        char preservation[total_length];
+
+        memcpy(preservation, VGA_TEXT_BUFFER + offset - total_length, total_length);
+        _k_screen_erase();
+        memcpy(VGA_TEXT_BUFFER, preservation, total_length);
+        _k_screen_set_cursor((int) (total_length));
+    }
 }

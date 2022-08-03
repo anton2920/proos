@@ -33,5 +33,6 @@ void k_screen_prints_ex(const char *str, unsigned char attr);
 void k_screen_prints(const char *str);
 
 void k_screen_clear(void);
+void k_screen_handle_ctrl_l(unsigned long line_length);
 
 #endif // SCREEN_H

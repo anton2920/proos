@@ -9,7 +9,10 @@
 
 enum k_keyboard_scancodes {
     K_SCAN_MAKE_BACKSP = 0x0E,
+    K_SCAN_MAKE_U      = 0x16,
     K_SCAN_MAKE_ENTER  = 0x1C,
+    K_SCAN_MAKE_LCTRL  = 0x1D,
+    K_SCAN_MAKE_L      = 0x26,
     K_SCAN_MAKE_LSHIFT = 0x2A,
     K_SCAN_MAKE_RSHIFT = 0x36,
     K_SCAN_MAKE_CAPSLK = 0x3A,
@@ -104,8 +107,9 @@ static char kbd_us[][90] =
 };
 
 
-static bool capsl_pressed = false;
-static bool shift_pressed = false;
+static bool capslk_pressed = false;
+static bool shift_pressed  = false;
+static bool ctrl_pressed   = false;
 
 static unsigned long offset_from_prompt = 0;
 
@@ -136,12 +140,18 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
     /* Read from the keyboard's data buffer */
     scancode = inb(0x60);
 
+    /* TODO: move this logic somewhere else? */
     if (scancode & 0x80) {
         /* Switch for break codes as if they were make codes */
         switch (scancode & 0x7F) {
             case K_SCAN_MAKE_LSHIFT:
             case K_SCAN_MAKE_RSHIFT:
                 shift_pressed = false;
+                break;
+            case K_SCAN_MAKE_LCTRL:
+                ctrl_pressed = false;
+                break;
+            default:
                 break;
         }
     } else {
@@ -159,19 +169,42 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
                 shift_pressed = true;
                 break;
             case K_SCAN_MAKE_CAPSLK:
-                capsl_pressed = !capsl_pressed;
+                capslk_pressed = !capslk_pressed;
+                break;
+            case K_SCAN_MAKE_LCTRL:
+                ctrl_pressed = true;
                 break;
             default:
-                print_ch = kbd_us[shift_pressed ^ capsl_pressed][scancode];
-                if (print_ch) {
-                    k_screen_printc(print_ch);
-                    if (print_ch == '\b') {
-                        ++offset_from_prompt;
-                    } else {
-                        --offset_from_prompt;
+                if (ctrl_pressed) {
+                    switch (scancode) {
+                        case K_SCAN_MAKE_L:
+                            k_screen_handle_ctrl_l(offset_from_prompt);
+                            break;
+                        case K_SCAN_MAKE_U:
+                            if (offset_from_prompt) {
+                                do {
+                                    k_screen_printc('\b');
+                                    --offset_from_prompt;
+                                } while (offset_from_prompt);
+                            } else {
+                                k_screen_printc('\a');
+                            }
+                            break;
+                        default:
+                            break;
                     }
-                } else if (scancode == K_SCAN_MAKE_BACKSP) {
-                    k_screen_printc('\a');
+                } else {
+                    print_ch = kbd_us[shift_pressed ^ capslk_pressed][scancode];
+                    if (print_ch) {
+                        k_screen_printc(print_ch);
+                        if (print_ch == '\b') {
+                            --offset_from_prompt;
+                        } else {
+                            ++offset_from_prompt;
+                        }
+                    } else if (scancode == K_SCAN_MAKE_BACKSP) {
+                        k_screen_printc('\a');
+                    }
                 }
                 break;
         }
