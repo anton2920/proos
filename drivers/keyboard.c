@@ -105,6 +105,9 @@ static bool capsl_pressed = false;
 static bool shift_pressed = false;
 
 
+void k_prompt(void);
+
+
 /* Handles the keyboard interrupt */
 static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
 {
@@ -131,6 +134,7 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
                 /* Print CRLF for a newline */
                 k_screen_printc('\r');
                 k_screen_printc('\n');
+                k_prompt();
                 break;
             case K_SCAN_MAKE_LSHIFT:
             case K_SCAN_MAKE_RSHIFT:

@@ -8,12 +8,21 @@
 #include "irq.h"
 
 
+char *k_prompt_str = "root@proos#> ";
+
+
 static void k_intro(void)
 {
     /* Finishing "Booting... " message */
     k_screen_prints("done.\r\n");
 
     k_screen_prints_ex("Loaded ProOS " VERSION "\r\n\a", VGA_TEXT_FG(VGA_LIGHT_CYAN));
+}
+
+
+void k_prompt(void)
+{
+    k_screen_prints_ex(k_prompt_str, VGA_TEXT_FG(VGA_LIGHT_GREEN));
 }
 
 
@@ -34,6 +43,7 @@ void k_main(void)
 {
     k_init();
     k_intro();
+    k_prompt();
 
     /* Keyboard input loop */
     while (1) {
