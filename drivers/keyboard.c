@@ -8,6 +8,7 @@
 
 
 enum k_keyboard_scancodes {
+    K_SCAN_MAKE_BACKSP = 0x0E,
     K_SCAN_MAKE_ENTER  = 0x1C,
     K_SCAN_MAKE_LSHIFT = 0x2A,
     K_SCAN_MAKE_RSHIFT = 0x36,
@@ -25,8 +26,9 @@ static char kbd_us[][90] =
     {
         0,    /* It starts with one */
         27,   /* 0x01 - ESC */
-        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', '\b', '\t',
-        'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
+        '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=',
+        0, /* 0x0E - Backspace */
+        '\t', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',
         '\n', /* 0x1C - Enter */
         0,    /* 0x1D - Left Ctrl */
         'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`',
@@ -63,8 +65,9 @@ static char kbd_us[][90] =
     {
         0,    /* It starts with one */
         27,   /* 0x01 - ESC */
-        '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', '\b', '\t',
-        'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}',
+        '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+',
+        0, /* 0x0E - Backspace */
+        '\t', 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}',
         '\n', /* 0x1C - Enter */
         0,    /* 0x1D - Left Ctrl */
         'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"',  '~',
@@ -104,14 +107,31 @@ static char kbd_us[][90] =
 static bool capsl_pressed = false;
 static bool shift_pressed = false;
 
+static unsigned long offset_from_prompt = 0;
+
 
 void k_prompt(void);
+
+
+static void _k_keyboard_disable_backspace(void)
+{
+    kbd_us[0][K_SCAN_MAKE_BACKSP] = 0;
+    kbd_us[1][K_SCAN_MAKE_BACKSP] = 0;
+}
+
+
+static void _k_keyboard_enable_backspace(void)
+{
+    kbd_us[0][K_SCAN_MAKE_BACKSP] = '\b';
+    kbd_us[1][K_SCAN_MAKE_BACKSP] = '\b';
+}
 
 
 /* Handles the keyboard interrupt */
 static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
 {
     unsigned char scancode;
+    char print_ch;
 
     /* Read from the keyboard's data buffer */
     scancode = inb(0x60);
@@ -134,6 +154,7 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
                 /* Print CRLF for a newline */
                 k_screen_printc('\r');
                 k_screen_printc('\n');
+                offset_from_prompt = 0;
                 k_prompt();
                 break;
             case K_SCAN_MAKE_LSHIFT:
@@ -144,9 +165,23 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
                 capsl_pressed = true;
                 break;
             default:
-                k_screen_printc(kbd_us[shift_pressed ^ capsl_pressed][scancode]);
+                print_ch = kbd_us[shift_pressed ^ capsl_pressed][scancode];
+                if (print_ch) {
+                    k_screen_printc(print_ch);
+                    if (print_ch == '\b') {
+                        ++offset_from_prompt;
+                    } else {
+                        --offset_from_prompt;
+                    }
+                }
                 break;
         }
+    }
+
+    if (offset_from_prompt) {
+        _k_keyboard_enable_backspace();
+    } else {
+        _k_keyboard_disable_backspace();
     }
 }
 
