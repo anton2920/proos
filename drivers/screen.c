@@ -88,6 +88,12 @@ static void _k_screen_printc_at(char ch, int row, int col, unsigned char style)
         case '\a':
             k_pcspk_beep();
             break;
+        case '\b':
+            if (offset != _k_screen_get_screen_offset(offset / (2 * MAX_COLS), 0)) {
+                offset -= 2;
+                vga_text_buffer[offset] = ' ';
+            }
+            break;
         case '\n':
             offset += 2 * MAX_COLS;
             break;
