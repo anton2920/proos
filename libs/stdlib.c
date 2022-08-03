@@ -35,3 +35,21 @@ void *memcpy(void *dest, const void *src, unsigned long n)
 
     return ret;
 }
+
+
+int memcmp(const void *s1, const void *s2, unsigned long n)
+{
+    const unsigned char *str1 = s1, *str2 = s2;
+
+    while (n--) {
+        if (*str1 < *str2) {
+            return -1;
+        } else if (*str1 > *str2) {
+            return 1;
+        }
+        ++str1;
+        ++str2;
+    }
+
+    return 0;
+}
