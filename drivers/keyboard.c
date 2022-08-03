@@ -173,6 +173,8 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
                     } else {
                         --offset_from_prompt;
                     }
+                } else if (scancode == K_SCAN_MAKE_BACKSP) {
+                    k_screen_printc('\a');
                 }
                 break;
         }
