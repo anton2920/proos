@@ -143,9 +143,6 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
             case K_SCAN_MAKE_RSHIFT:
                 shift_pressed = false;
                 break;
-            case K_SCAN_MAKE_CAPSLK:
-                capsl_pressed = false;
-                break;
         }
     } else {
         assert(scancode < sizeof(kbd_us[0]));
@@ -162,7 +159,7 @@ static void k_keyboard_handler(k_irq_registers_t *regs __attribute__ ((unused)))
                 shift_pressed = true;
                 break;
             case K_SCAN_MAKE_CAPSLK:
-                capsl_pressed = true;
+                capsl_pressed = !capsl_pressed;
                 break;
             default:
                 print_ch = kbd_us[shift_pressed ^ capsl_pressed][scancode];
