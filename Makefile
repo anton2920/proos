@@ -12,7 +12,7 @@ LDFLAGS = -melf_i386 --oformat=binary
 
 # C compiler
 CC = gcc
-CFLAGS = -Wall -Wextra -Wno-stringop-overflow -O2 -ffreestanding -m32 -DVERSION='"$(VERSION)"'
+CFLAGS = -Wall -Wextra -Wno-stringop-overflow -O2 -ffreestanding -fno-pie -m32 -DVERSION='"$(VERSION)"'
 
 # Directories
 BINDIR = ./bin
