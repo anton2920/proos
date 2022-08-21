@@ -6,14 +6,11 @@
 #ifndef _SIGNAL_H
 #define _SIGNAL_H
 
-#ifndef _ANSI_H
 #include <ansi.h>
-#endif /* _ANSI_H */
 
 #ifdef _POSIX_SOURCE
-#ifndef _TYPES_H
+
 #include <sys/types.h>
-#endif /* _TYPES_H */
 
 #ifndef _SIGSET_T
 #define _SIGSET_T

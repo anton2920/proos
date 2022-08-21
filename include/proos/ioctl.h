@@ -5,9 +5,7 @@
 #ifndef _IOCTL_H
 #define _IOCTL_H
 
-#ifndef _TYPES_H
 #include <sys/types.h>
-#endif
 
 #if _EM_WSIZE >= 4
 

@@ -3,9 +3,8 @@
 #ifndef _STDLIB_H
 #define _STDLIB_H
 
-#ifndef _ANSI_H
 #include <ansi.h>
-#endif
+
 
 /* The macros are NULL, EXIT_FAILURE, EXIT_SUCCESS, RAND_MAX, and MB_CUR_MAX.*/
 #define NULL            ((void *) 0)

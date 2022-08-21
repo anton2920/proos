@@ -1,9 +1,7 @@
 #ifndef _STDIO_H
 #define _STDIO_H
 
-#ifndef _ANSI_H
 #include <ansi.h>
-#endif
 
 
 /* Focus point of all stdio activity. */
@@ -116,14 +114,14 @@ _PROTOTYPE( void perror, (const char *_s) );
 _PROTOTYPE( int __fillbuf, (FILE *_stream) );
 _PROTOTYPE( int __flushbuf, (int _c, FILE *_stream) );
 
-#define getchar()   getc(stdin)
-#define putchar(c)  putc(c,stdout)
-#define getc(p)     (--(p)->_count >= 0 ? (int) (*(p)->_ptr++) : __fillbuf(p))
-#define putc(c, p)  (--(p)->_count >= 0 ? (int) (*(p)->_ptr++ = (c)) : __flushbuf((c),(p)))
+#define getchar()           getc(stdin)
+#define putchar(c)          putc(c,stdout)
+#define getc(p)             (--(p)->_count >= 0 ? (int) (*(p)->_ptr++) : __fillbuf(p))
+#define putc(c, p)          (--(p)->_count >= 0 ? (int) (*(p)->_ptr++ = (c)) : __flushbuf((c),(p)))
 
-#define feof(p)     (((p)->_flags & _IOEOF) != 0)
-#define ferror(p)   (((p)->_flags & _IOERR) != 0)
-#define clearerr(p) ((p)->_flags &= ~(_IOERR|_IOEOF))
+#define feof(p)             (((p)->_flags & _IOEOF) != 0)
+#define ferror(p)           (((p)->_flags & _IOERR) != 0)
+#define clearerr(p)         ((p)->_flags &= ~(_IOERR|_IOEOF))
 
 #ifdef _POSIX_SOURCE
 
@@ -131,9 +129,9 @@ _PROTOTYPE( int fileno, (FILE *_stream) );
 _PROTOTYPE( FILE *fdopen, (int _fildes, const char *_types) );
 
 
-#define fileno(stream)  ((stream)->_fd)
-#define L_ctermid       255 /* required by POSIX */
-#define L_cuserid       255 /* required by POSIX */
+#define fileno(stream)      ((stream)->_fd)
+#define L_ctermid           255 /* required by POSIX */
+#define L_cuserid           255 /* required by POSIX */
 
 #endif /* _POSIX_SOURCE */
 

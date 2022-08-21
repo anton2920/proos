@@ -15,7 +15,7 @@
 #endif
 
 #if !defined(_PROOS_CHIP)
-#include "error, configuration is not known" /* probably for compatibility, when compiler doesn't support #error */
+#error "error, configuration is not known"
 #endif
 
 /* The following structure should match the stackframe_s structure used
@@ -88,7 +88,7 @@ struct sigregs {
 };
 
 #else
-#include "error, _PROOS_CHIP is not supported"
+#error "error, _PROOS_CHIP is not supported"
 #endif /* _PROOS_CHIP == _CHIP_M68000 */
 
 #endif /* _PROOS_CHIP == _CHIP_INTEL */

@@ -1,9 +1,7 @@
 #ifndef _SVRCTL_H
 #define _SVRCTL_H
 
-#ifndef _TYPES_H
 #include <sys/types.h>
-#endif
 
 /* Server control commands have the same encoding as the commands for ioctls. */
 #include <proos/ioctl.h>

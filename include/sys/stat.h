@@ -6,9 +6,7 @@
 #ifndef _STAT_H
 #define _STAT_H
 
-#ifndef _TYPES_H
 #include <sys/types.h>
-#endif
 
 
 struct stat {

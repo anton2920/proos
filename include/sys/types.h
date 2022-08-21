@@ -7,9 +7,7 @@
 #ifndef _TYPES_H
 #define _TYPES_H
 
-#ifndef _ANSI_H
 #include <ansi.h>
-#endif
 
 /* The type size_t holds all results of the sizeof operator. At first glance,
  * it seems obvious that it should be an unsigned int, but this is not always

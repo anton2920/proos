@@ -3,9 +3,8 @@
 #ifndef _UNISTD_H
 #define _UNISTD_H
 
-#ifndef _TYPES_H
 #include <sys/types.h>
-#endif
+
 
 /* Values used by access(). POSIX Table 2-8. */
 #define F_OK                    0       /* test if file exists */
@@ -144,9 +143,7 @@ _PROTOTYPE( int usleep, (useconds_t _useconds) );
 
 #ifdef _PROOS
 
-#ifndef _TYPE_H
 #include <proos/type.h>
-#endif
 
 
 _PROTOTYPE( int brk, (char *_addr) );
